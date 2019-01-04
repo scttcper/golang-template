@@ -23,7 +23,6 @@
     "prebuild": "rimraf dist",
     "build": "microbundle build --target node --format cjs,es -o dist",
     "postbuild": "cp package.json dist && cp LICENSE dist && cp README.md dist && rimraf dist/test",
-    "build:docs": "typedoc --out docs --target es6 --theme minimal --mode file src && touch docs/.nojekyll",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --no-cache",
@@ -46,7 +45,6 @@
     "tslint": "5.12.0",
     "tslint-config-prettier": "1.17.0",
     "tslint-xo": "0.11.0",
-    "typedoc": "0.14.0",
     "typescript": "3.2.2"
   },
   "publishConfig": {
