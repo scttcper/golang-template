@@ -6,11 +6,15 @@
   "license": "MIT",
   "repository": "typectrl/golang-template",
   "keywords": [
-    "typescript"
+    "typescript",
+    "golang",
+    "template",
+    "templating",
+    "re_replace"
   ],
   "source": "src/index.ts",
-  "main": "./.js",
-  "module": "./.m.js",
+  "main": "./index.js",
+  "module": "./index.m.js",
   "typings": "./src/index.d.ts",
   "sideEffects": false,
   "scripts": {
@@ -30,7 +34,7 @@
   },
   "devDependencies": {
     "@types/jest": "23.3.11",
-    "@types/lodash.get": "^4.4.4",
+    "@types/lodash.get": "4.4.4",
     "@types/node": "10.12.18",
     "jest": "23.6.0",
     "microbundle": "0.9.0",
@@ -44,6 +48,9 @@
     "tslint-xo": "0.11.0",
     "typedoc": "0.14.0",
     "typescript": "3.2.2"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "release": {
     "branch": "master"

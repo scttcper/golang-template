@@ -1,6 +1,6 @@
-# golang-template
+# golang-template [![npm](https://img.shields.io/npm/v/@ctrl/golang-template.svg?maxAge=3600)](https://www.npmjs.com/package/@ctrl/golang-template) [![build status](https://travis-ci.com/TypeCtrl/golang-template.svg?branch=master)](https://travis-ci.org/typectrl/golang-template) [![coverage status](https://codecov.io/gh/typectrl/golang-template/branch/master/graph/badge.svg)](https://codecov.io/gh/typectrl/golang-template)
 
-This is a typescript library that handles basic functions of the golang template syntax.
+> Typescript library that handles basic functions of the golang template syntax.
 
 ### Install
 
@@ -19,10 +19,14 @@ parse('{{ if .keywords }}{{ .keywords }}{{else}}nothing{{end}}', { keywords });
 ### Supported template functions
 
 #### variables
+```ts
 `{{ .foo }}`
+```
 
-#### if...else
+#### if..else
+```ts
 `{{ if .keywords }}{{ .keywords }}{{else}}nothing{{end}}`
+```
 
 #### join
 ```ts
@@ -32,6 +36,13 @@ parse('{{ join .categories "," }}', { categories });
 ```
 
 #### range
+```ts
+const categories = ['1', '2', '3'];
+parse('{{ range .categories }}{{.}};{{end}}', { categories });
+// 1;2;3;
+```
+
+#### re_replace
 ```ts
 const categories = ['1', '2', '3'];
 parse('{{ range .categories }}{{.}};{{end}}', { categories });
