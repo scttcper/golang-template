@@ -82,13 +82,13 @@ export function rangeReplace(str: string, variables: any) {
   while ((m = result.match(regex)) !== null) {
     let expanded = '';
 
-    const all = m[0];
-    const prop = m[1];
-    const prefix = m[2];
-    const postfix = m[3];
+    const all: string = m[0];
+    const prop: string = m[1];
+    const prefix: string = m[2];
+    const postfix: string = m[3];
 
     for (const value of get(variables, prop.substring(1))) {
-      expanded += prefix + value + postfix;
+      expanded += `${prefix}${value}${postfix}`;
     }
 
     result = result.replace(all, expanded);
