@@ -13,7 +13,8 @@ npm install @ctrl/golang-template
 import { parse } from '@ctrl/golang-template';
 
 const keywords = '123';
-parse('{{ if .keywords }}{{ .keywords }}{{else}}nothing{{end}}', { keywords });
+parse('{{ if .keywords }}{{ .keywords }}!!{{else}}nothing{{end}}', { keywords });
+// '123!!'
 ```
 
 ### Supported template functions
