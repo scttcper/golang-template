@@ -111,6 +111,11 @@ export function variableReplace(str: string, variables: any) {
   return result;
 }
 
+/**
+ * parse template and insert variables
+ * @param str golang style template
+ * @param variables object of variables to insert
+ */
 export function parse(str: string, variables: any) {
   let result = reReplace(str, variables);
   result = joinReplace(result, variables);
