@@ -13,8 +13,8 @@
     "re_replace"
   ],
   "source": "src/index.ts",
-  "main": "./index.js",
-  "module": "./index.m.js",
+  "main": "./golang-template.js",
+  "module": "./golang-template.m.js",
   "typings": "./src/index.d.ts",
   "sideEffects": false,
   "scripts": {
