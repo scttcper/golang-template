@@ -34,7 +34,7 @@
   "devDependencies": {
     "@types/jest": "23.3.13",
     "@types/lodash.get": "4.4.4",
-    "@types/node": "10.12.18",
+    "@types/node": "10.12.19",
     "jest": "23.6.0",
     "microbundle": "0.9.0",
     "prettier": "1.15.3",
