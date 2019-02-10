@@ -12,16 +12,14 @@
     "templating",
     "re_replace"
   ],
-  "source": "src/index.ts",
-  "main": "./golang-template.js",
-  "module": "./golang-template.m.js",
+  "main": "./src/index.js",
   "typings": "./src/index.d.ts",
   "sideEffects": false,
   "scripts": {
     "lint": "tslint -t stylish -p .",
-    "lint:fix": "tslint -p tsconfig.json -t stylish --fix 'src/**/*.ts' 'test/**/*.ts'",
+    "lint:fix": "tslint -t stylish -p . --fix",
     "prebuild": "rimraf dist",
-    "build": "microbundle build --target node --format cjs,es -o dist",
+    "build": "tsc -p tsconfig.json",
     "postbuild": "cp package.json dist && cp LICENSE dist && cp README.md dist && rimraf dist/test",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -32,20 +30,19 @@
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@types/jest": "23.3.13",
+    "@types/jest": "24.0.0",
     "@types/lodash.get": "4.4.4",
-    "@types/node": "10.12.19",
-    "jest": "23.6.0",
-    "microbundle": "0.9.0",
-    "prettier": "1.16.3",
+    "@types/node": "10.12.24",
+    "jest": "24.1.0",
+    "prettier": "1.16.4",
     "rimraf": "2.6.3",
     "semantic-release": "15.13.3",
     "ts-jest": "23.10.5",
-    "ts-node": "7.0.1",
+    "ts-node": "8.0.2",
     "tslint": "5.12.1",
-    "tslint-config-prettier": "1.17.0",
-    "tslint-xo": "0.11.0",
-    "typescript": "3.3.1"
+    "tslint-config-prettier": "1.18.0",
+    "tslint-xo": "0.14.0",
+    "typescript": "3.3.3"
   },
   "publishConfig": {
     "access": "public"

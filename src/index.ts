@@ -1,9 +1,9 @@
 import get from 'lodash.get';
 
-export function reReplace(str: string, variables: any) {
+export function reReplace(str: string, variables: any): string {
   const regex = /{{\s*re_replace\s+(\..+?)\s+\"(.*?)\"\s+\"(.*?)\"\s*}}/;
   let result = str;
-  let m;
+  let m: RegExpMatchArray | null;
 
   while ((m = result.match(regex)) !== null) {
     const all = m[0];
@@ -12,7 +12,7 @@ export function reReplace(str: string, variables: any) {
     const newvalue = m[3];
 
     const replaceRegex = new RegExp(regexp, 'g');
-    const input = get(variables, prop.substring(1));
+    const input: string = get(variables, prop.substring(1));
     const expanded = input.replace(replaceRegex, newvalue);
 
     result = result.replace(all, expanded);
@@ -20,10 +20,10 @@ export function reReplace(str: string, variables: any) {
   return result;
 }
 
-export function joinReplace(str: string, variables: any) {
+export function joinReplace(str: string, variables: any): string {
   const regex = /{{\s*join\s+\.(.+?)\s+\"(.*?)\"\s*}}/;
   let result = str;
-  let m;
+  let m: RegExpMatchArray | null;
 
   while ((m = result.match(regex)) !== null) {
     const all = m[0];
@@ -38,18 +38,18 @@ export function joinReplace(str: string, variables: any) {
   return result;
 }
 
-export function ifElseReplace(str: string, variables: any) {
+export function ifElseReplace(str: string, variables: any): string {
   const regex = /{{\s*if\s*(.+?)\s*}}(.*?){{\s*else\s*}}(.*?){{\s*end\s*}}/;
   let result = str;
-  let m;
+  let m: RegExpMatchArray | null;
 
   while ((m = result.match(regex)) !== null) {
     let conditionResult: string;
 
-    const all: string = m[0];
-    const condition: string = m[1];
-    const onTrue: string = m[2];
-    const onFalse: string = m[3];
+    const all = m[0];
+    const condition = m[1];
+    const onTrue = m[2];
+    const onFalse = m[3];
 
     if (condition.startsWith('.')) {
       let conditionResultState = false;
@@ -74,18 +74,18 @@ export function ifElseReplace(str: string, variables: any) {
   return result;
 }
 
-export function rangeReplace(str: string, variables: any) {
+export function rangeReplace(str: string, variables: any): string {
   const regex = /{{\s*range\s*(.+?)\s*}}(.*?){{\.}}(.*?){{end}}/;
   let result = str;
-  let m;
+  let m: RegExpMatchArray | null;
 
   while ((m = result.match(regex)) !== null) {
     let expanded = '';
 
-    const all: string = m[0];
-    const prop: string = m[1];
-    const prefix: string = m[2];
-    const postfix: string = m[3];
+    const all = m[0];
+    const prop = m[1];
+    const prefix = m[2];
+    const postfix = m[3];
 
     for (const value of get(variables, prop.substring(1))) {
       expanded += `${prefix}${value}${postfix}`;
@@ -96,10 +96,10 @@ export function rangeReplace(str: string, variables: any) {
   return result;
 }
 
-export function variableReplace(str: string, variables: any) {
+export function variableReplace(str: string, variables: any): string {
   const regex = /{{\s*(\..+?)\s*}}/;
   let result = str;
-  let m;
+  let m: RegExpMatchArray | null;
 
   while ((m = result.match(regex)) !== null) {
     const all = m[0];
@@ -116,7 +116,7 @@ export function variableReplace(str: string, variables: any) {
  * @param str golang style template
  * @param variables object of variables to insert
  */
-export function parse(str: string, variables: any) {
+export function parse(str: string, variables: any): string {
   let result = reReplace(str, variables);
   result = joinReplace(result, variables);
   result = ifElseReplace(result, variables);
