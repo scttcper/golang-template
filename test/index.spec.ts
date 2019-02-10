@@ -9,10 +9,8 @@ import {
 
 describe('reReplace', () => {
   it('should rereplace string', () => {
-    const categories = '123$';
-    expect(reReplace('{{ re_replace .categories "[^a-zA-Z0-9]+" "%" }}', { categories })).toBe(
-      '123%',
-    );
+    const category = '123$';
+    expect(reReplace('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category })).toBe('123%');
   });
 });
 

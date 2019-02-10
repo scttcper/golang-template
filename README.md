@@ -46,7 +46,7 @@ parse('{{ range .categories }}{{.}};{{end}}', { categories });
 #### re_replace
 ```ts
 const categories = ['1', '2', '3'];
-parse('{{ range .categories }}{{.}};{{end}}', { categories });
+parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { categories });
 // 1;2;3;
 ```
 
