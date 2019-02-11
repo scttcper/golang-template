@@ -1,4 +1,4 @@
-import { get } from 'lodash';
+import get from 'lodash.get';
 
 export function reReplace(str: string, variables: any): string {
   const regex = /{{\s*re_replace\s+(\..+?)\s+\"(.*?)\"\s+\"(.*?)\"\s*}}/;
@@ -87,8 +87,11 @@ export function rangeReplace(str: string, variables: any): string {
     const prefix = m[2];
     const postfix = m[3];
 
-    for (const value of get(variables, prop.substring(1))) {
-      expanded += `${prefix}${value}${postfix}`;
+    const arr = get(variables, prop.substring(1));
+    if (arr && Array.isArray(arr)) {
+      for (const value of arr) {
+        expanded += `${prefix}${value}${postfix}`;
+      }
     }
 
     result = result.replace(all, expanded);

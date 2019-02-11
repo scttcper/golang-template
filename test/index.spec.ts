@@ -43,6 +43,9 @@ describe('range', () => {
       categories.join(';') + ';',
     );
   });
+  it('should allow no range variable', () => {
+    expect(rangeReplace('{{ range .categories }}{{.}};{{end}}', { })).toBe('');
+  });
 });
 
 describe('variable', () => {

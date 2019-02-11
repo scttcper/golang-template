@@ -3,10 +3,11 @@
   "compilerOptions": {
     "moduleResolution": "node",
     "lib": ["es2017"],
-    "target": "es2015",
+    "target": "es2017",
     "module": "commonjs",
     "declaration": true,
     "strict": true,
+    "esModuleInterop": true,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "sourceMap": true,
