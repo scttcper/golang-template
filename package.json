@@ -1,7 +1,7 @@
 {
   "name": "@ctrl/golang-template",
   "version": "0.0.0-placeholder",
-  "description": "basic golang template parsing in js",
+  "description": "Basic golang template parsing in js",
   "author": "Scott Cooper <scttcper@gmail.com>",
   "license": "MIT",
   "repository": "typectrl/golang-template",
@@ -12,15 +12,16 @@
     "templating",
     "re_replace"
   ],
-  "main": "./src/index.js",
-  "typings": "./src/index.d.ts",
+  "main": "./index.js",
+  "typings": "./index.d.ts",
+  "module": "./module/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "lint": "tslint -t stylish -p .",
-    "lint:fix": "tslint -t stylish -p . --fix",
+    "lint": "eslint src/**/*.ts test/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts test/**/*.ts",
     "prebuild": "rimraf dist",
-    "build": "tsc -p tsconfig.json",
-    "postbuild": "cp package.json dist && cp LICENSE dist && cp README.md dist && rimraf dist/test",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig.module.json",
+    "postbuild": "cp package.json dist && cp LICENSE dist && cp README.md dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --no-cache",
@@ -30,19 +31,22 @@
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@types/jest": "24.0.0",
-    "@types/lodash.get": "4.4.4",
-    "@types/node": "10.12.24",
+    "@types/jest": "24.0.6",
+    "@types/lodash.get": "4.4.5",
+    "@types/node": "11.9.5",
+    "@typescript-eslint/eslint-plugin": "1.4.1",
+    "@typescript-eslint/parser": "1.4.1",
+    "eslint": "5.14.1",
+    "eslint-config-prettier": "4.0.0",
+    "eslint-config-xo-space": "0.21.0",
+    "eslint-config-xo-typescript": "0.8.0",
+    "eslint-plugin-import": "2.16.0",
     "jest": "24.1.0",
     "prettier": "1.16.4",
     "rimraf": "2.6.3",
     "semantic-release": "15.13.3",
-    "ts-jest": "23.10.5",
-    "ts-node": "8.0.2",
-    "tslint": "5.12.1",
-    "tslint-config-prettier": "1.18.0",
-    "tslint-xo": "0.14.0",
-    "typescript": "3.3.3"
+    "ts-jest": "24.0.0",
+    "typescript": "3.3.3333"
   },
   "publishConfig": {
     "access": "public"

@@ -1,7 +1,7 @@
 import get from 'lodash.get';
 
 export function reReplace(str: string, variables: any): string {
-  const regex = /{{\s*re_replace\s+(\..+?)\s+\"(.*?)\"\s+\"(.*?)\"\s*}}/;
+  const regex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
@@ -17,11 +17,12 @@ export function reReplace(str: string, variables: any): string {
 
     result = result.replace(all, expanded);
   }
+
   return result;
 }
 
 export function joinReplace(str: string, variables: any): string {
-  const regex = /{{\s*join\s+\.(.+?)\s+\"(.*?)\"\s*}}/;
+  const regex = /{{\s*join\s+\.(.+?)\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
@@ -35,6 +36,7 @@ export function joinReplace(str: string, variables: any): string {
 
     result = result.replace(all, expanded);
   }
+
   return result;
 }
 
@@ -65,12 +67,15 @@ export function ifElseReplace(str: string, variables: any): string {
       } else {
         throw new Error(`Unexpceted type for variable ${condition}: ${typeof value}`);
       }
+
       conditionResult = conditionResultState ? onTrue : onFalse;
     } else {
       throw new Error('Functionality not implemented');
     }
+
     result = result.replace(all, conditionResult);
   }
+
   return result;
 }
 
@@ -96,6 +101,7 @@ export function rangeReplace(str: string, variables: any): string {
 
     result = result.replace(all, expanded);
   }
+
   return result;
 }
 
@@ -111,6 +117,7 @@ export function variableReplace(str: string, variables: any): string {
     const value = get(variables, prop.substring(1));
     result = result.replace(all, value);
   }
+
   return result;
 }
 
