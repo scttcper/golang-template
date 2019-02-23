@@ -14,7 +14,7 @@
   ],
   "main": "./index.js",
   "typings": "./index.d.ts",
-  "module": "./module/index.d.ts",
+  "module": "./module/index.ts",
   "sideEffects": false,
   "scripts": {
     "lint": "eslint src/**/*.ts test/**/*.ts",
