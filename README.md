@@ -1,4 +1,4 @@
-# golang-template [![npm](https://img.shields.io/npm/v/@ctrl/golang-template.svg?maxAge=3600)](https://www.npmjs.com/package/@ctrl/golang-template) [![build status](https://travis-ci.com/TypeCtrl/golang-template.svg?branch=master)](https://travis-ci.org/typectrl/golang-template) [![coverage status](https://codecov.io/gh/typectrl/golang-template/branch/master/graph/badge.svg)](https://codecov.io/gh/typectrl/golang-template)
+# golang-template [![npm](https://img.shields.io/npm/v/@ctrl/golang-template.svg?maxAge=3600)](https://www.npmjs.com/package/@ctrl/golang-template) [![CircleCI](https://circleci.com/gh/TypeCtrl/golang-template.svg?style=svg)](https://circleci.com/gh/TypeCtrl/golang-template) [![coverage status](https://codecov.io/gh/typectrl/golang-template/branch/master/graph/badge.svg)](https://codecov.io/gh/typectrl/golang-template)
 
 > Typescript library that handles basic functions of the golang template syntax.
 
