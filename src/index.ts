@@ -5,7 +5,7 @@ export function reReplace(str: string, variables: any): string {
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = result.match(regex)) !== null) {
+  while ((m = regex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
     const regexp = m[2];
@@ -26,7 +26,7 @@ export function joinReplace(str: string, variables: any): string {
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = result.match(regex)) !== null) {
+  while ((m = regex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
     const delimiter = m[2];
@@ -45,7 +45,7 @@ export function ifElseReplace(str: string, variables: any): string {
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = result.match(regex)) !== null) {
+  while ((m = regex.exec(result)) !== null) {
     let conditionResult: string;
 
     const all = m[0];
@@ -84,7 +84,7 @@ export function rangeReplace(str: string, variables: any): string {
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = result.match(regex)) !== null) {
+  while ((m = regex.exec(result)) !== null) {
     let expanded = '';
 
     const all = m[0];
@@ -110,7 +110,7 @@ export function variableReplace(str: string, variables: any): string {
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = result.match(regex)) !== null) {
+  while ((m = regex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
 
