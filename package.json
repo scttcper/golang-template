@@ -27,7 +27,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --no-cache",
-    "semantic-release": "cd dist && semantic-release"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "lodash.get": "^4.4.2"
