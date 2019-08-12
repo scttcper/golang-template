@@ -33,15 +33,15 @@
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@types/jest": "24.0.16",
+    "@types/jest": "24.0.17",
     "@types/lodash.get": "4.4.6",
-    "@types/node": "12.6.8",
+    "@types/node": "12.7.1",
     "@typescript-eslint/eslint-plugin": "1.13.0",
     "@typescript-eslint/parser": "1.13.0",
     "del-cli": "2.0.0",
     "eslint": "6.1.0",
     "eslint-config-xo-space": "0.21.0",
-    "eslint-config-xo-typescript": "0.15.0",
+    "eslint-config-xo-typescript": "0.16.0",
     "eslint-plugin-import": "2.18.2",
     "jest": "24.8.0",
     "semantic-release": "15.13.19",

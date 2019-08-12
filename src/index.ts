@@ -1,6 +1,6 @@
 import get from 'lodash.get';
 
-export function reReplace(str: string, variables: any): string {
+export function reReplace(str: string, variables: object): string {
   const regex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -21,7 +21,7 @@ export function reReplace(str: string, variables: any): string {
   return result;
 }
 
-export function joinReplace(str: string, variables: any): string {
+export function joinReplace(str: string, variables: object): string {
   const regex = /{{\s*join\s+\.(.+?)\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -31,7 +31,7 @@ export function joinReplace(str: string, variables: any): string {
     const prop = m[1];
     const delimiter = m[2];
 
-    const input: any[] = get(variables, prop);
+    const input: string[] = get(variables, prop);
     const expanded = input.join(delimiter);
 
     result = result.replace(all, expanded);
@@ -40,7 +40,7 @@ export function joinReplace(str: string, variables: any): string {
   return result;
 }
 
-export function ifElseReplace(str: string, variables: any): string {
+export function ifElseReplace(str: string, variables: object): string {
   const regex = /{{\s*if\s*(.+?)\s*}}(.*?){{\s*else\s*}}(.*?){{\s*end\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -79,7 +79,7 @@ export function ifElseReplace(str: string, variables: any): string {
   return result;
 }
 
-export function rangeReplace(str: string, variables: any): string {
+export function rangeReplace(str: string, variables: object): string {
   const regex = /{{\s*range\s*(.+?)\s*}}(.*?){{\.}}(.*?){{end}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -105,7 +105,7 @@ export function rangeReplace(str: string, variables: any): string {
   return result;
 }
 
-export function variableReplace(str: string, variables: any): string {
+export function variableReplace(str: string, variables: object): string {
   const regex = /{{\s*(\..+?)\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -126,7 +126,7 @@ export function variableReplace(str: string, variables: any): string {
  * @param str golang style template
  * @param variables object of variables to insert
  */
-export function parse(str: string, variables: any): string {
+export function parse(str: string, variables: object): string {
   let result = reReplace(str, variables);
   result = joinReplace(result, variables);
   result = ifElseReplace(result, variables);
