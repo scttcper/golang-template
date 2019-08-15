@@ -82,4 +82,14 @@ describe('parse', () => {
       ),
     ).toBe(keywords + keywords);
   });
+  it('should parse if and range', () => {
+    const keywords = 'zzz';
+    const categories = ['1', '2', '3'];
+    expect(
+      parse(
+        '{{ range .categories }}{{.}};{{end}}{{ if .keywords }}{{ .keywords }}{{else}}{{end}}',
+        { keywords, categories },
+      ),
+    ).toBe('1;2;3;zzz');
+  });
 });
