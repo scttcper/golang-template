@@ -33,7 +33,7 @@
     "lodash.get": "^4.4.2"
   },
   "devDependencies": {
-    "@types/jest": "24.0.17",
+    "@types/jest": "24.0.18",
     "@types/lodash.get": "4.4.6",
     "@types/node": "12.7.1",
     "@typescript-eslint/eslint-plugin": "1.13.0",
