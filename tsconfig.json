@@ -13,6 +13,5 @@
     "sourceMap": true,
     "inlineSources": true,
     "outDir": "dist"
-  },
-  "include": ["src/index.ts"]
+  }
 }
