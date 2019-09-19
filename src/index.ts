@@ -1,4 +1,4 @@
-import get from 'lodash.get';
+import { get } from './util';
 
 export function reReplace(str: string, variables: object): string {
   const regex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
