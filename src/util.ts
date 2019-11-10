@@ -1,10 +1,10 @@
 /**
  * Gets the value at `path` of `object`.
- * @param {Object} object
- * @param {string|Array} path
- * @returns {*} value if exists else undefined
+ * @param object
+ * @param path
+ * @returns value if exists else undefined
  */
-export function get(object, path) {
+export function get(object: object, path: string | any[]): any {
   if (typeof path === 'string') {
     path = path.split('.').filter(key => key.length);
   }

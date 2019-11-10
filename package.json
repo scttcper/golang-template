@@ -14,7 +14,6 @@
   ],
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
-  "module": "./dist/module/index.js",
   "files": [
     "dist"
   ],
@@ -23,7 +22,7 @@
     "lint": "eslint -f codeframe src/**/*.ts test/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts test/**/*.ts",
     "prepare": "npm run build",
-    "build": "del dist && tsc -p tsconfig.build.json && tsc -p tsconfig.module.json",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:ci": "jest --coverage --no-cache",
@@ -31,20 +30,18 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "24.0.21",
-    "@types/lodash.get": "4.4.6",
-    "@types/node": "12.12.3",
-    "@typescript-eslint/eslint-plugin": "2.6.0",
-    "@typescript-eslint/parser": "2.6.0",
-    "del-cli": "3.0.0",
+    "@types/jest": "24.0.22",
+    "@types/node": "12.12.7",
+    "@typescript-eslint/eslint-plugin": "2.6.1",
+    "@typescript-eslint/parser": "2.6.1",
     "eslint": "6.6.0",
     "eslint-config-xo-space": "0.21.0",
     "eslint-config-xo-typescript": "0.21.0",
     "eslint-plugin-import": "2.18.2",
     "jest": "24.9.0",
-    "semantic-release": "15.13.28",
+    "semantic-release": "15.13.30",
     "ts-jest": "24.1.0",
-    "typescript": "3.6.4"
+    "typescript": "3.7.2"
   },
   "publishConfig": {
     "access": "public"
