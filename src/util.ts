@@ -9,5 +9,5 @@ export function get(object: object, path: string | any[]): any {
     path = path.split('.').filter(key => key.length);
   }
 
-  return path.reduce((dive, key) => dive && dive[key], object);
+  return path.reduce((dive, key) => dive?.[key], object);
 }

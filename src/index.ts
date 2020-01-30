@@ -92,9 +92,9 @@ export function rangeReplace(str: string, variables: object): string {
     const prefix = m[2];
     const postfix = m[3];
 
-    const arr = get(variables, prop.substring(1));
+    const arr: unknown = get(variables, prop.substring(1));
     if (arr && Array.isArray(arr)) {
-      for (const value of arr) {
+      for (const value of (arr as string[])) {
         expanded += `${prefix}${value}${postfix}`;
       }
     }
@@ -122,7 +122,7 @@ export function variableReplace(str: string, variables: object): string {
 }
 
 /**
- * parse template and insert variables
+ * Parse template and insert variables
  * @param str golang style template
  * @param variables object of variables to insert
  */
