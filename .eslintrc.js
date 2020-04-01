@@ -9,5 +9,8 @@ module.exports = {
     'object-curly-spacing': ['error', 'always'],
     '@typescript-eslint/indent': ['error', 2, { SwitchCase: 1 }],
     'comma-dangle': ['error', 'always-multiline'],
+    '@typescript-eslint/no-unsafe-member-access': 0,
+    '@typescript-eslint/no-unsafe-call': 0,
+    '@typescript-eslint/no-unsafe-return': 0,
   },
 };
