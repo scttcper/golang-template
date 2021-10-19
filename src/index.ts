@@ -1,6 +1,6 @@
 import { get } from './util';
 
-export function reReplace(str: string, variables: object): string {
+export function reReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -21,7 +21,7 @@ export function reReplace(str: string, variables: object): string {
   return result;
 }
 
-export function joinReplace(str: string, variables: object): string {
+export function joinReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*join\s+\.(.+?)\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -40,7 +40,7 @@ export function joinReplace(str: string, variables: object): string {
   return result;
 }
 
-export function ifElseReplace(str: string, variables: object): string {
+export function ifElseReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*if\s*(.+?)\s*}}(.*?){{\s*else\s*}}(.*?){{\s*end\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -79,7 +79,7 @@ export function ifElseReplace(str: string, variables: object): string {
   return result;
 }
 
-export function rangeReplace(str: string, variables: object): string {
+export function rangeReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*range\s*(.+?)\s*}}(.*?){{\.}}(.*?){{end}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -94,7 +94,7 @@ export function rangeReplace(str: string, variables: object): string {
 
     const arr: unknown = get(variables, prop.substring(1));
     if (arr && Array.isArray(arr)) {
-      for (const value of (arr as string[])) {
+      for (const value of arr as string[]) {
         expanded += `${prefix}${value}${postfix}`;
       }
     }
@@ -105,7 +105,7 @@ export function rangeReplace(str: string, variables: object): string {
   return result;
 }
 
-export function variableReplace(str: string, variables: object): string {
+export function variableReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*(\..+?)\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -121,7 +121,7 @@ export function variableReplace(str: string, variables: object): string {
   return result;
 }
 
-export function indexReplace(str: string, variables: object): string {
+export function indexReplace(str: string, variables: Record<string, any>): string {
   const regex = /{{\s*index\s*(\..+?)\s+(.+?)\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
@@ -133,7 +133,7 @@ export function indexReplace(str: string, variables: object): string {
 
     const top = get(variables, prop.substring(1));
     let value;
-    // @ts-ignore
+    // @ts-expect-error
     if (isNaN(index)) {
       value = top[index.substring(1, index.length - 1)];
     } else {
@@ -151,7 +151,7 @@ export function indexReplace(str: string, variables: object): string {
  * @param str golang style template
  * @param variables object of variables to insert
  */
-export function parse(str: string, variables: object): string {
+export function parse(str: string, variables: Record<string, any>): string {
   let result = reReplace(str, variables);
   result = joinReplace(result, variables);
   result = ifElseReplace(result, variables);

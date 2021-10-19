@@ -44,7 +44,7 @@ describe('range', () => {
     );
   });
   it('should allow no range variable', () => {
-    expect(rangeReplace('{{ range .categories }}{{.}};{{end}}', { })).toBe('');
+    expect(rangeReplace('{{ range .categories }}{{.}};{{end}}', {})).toBe('');
   });
 });
 

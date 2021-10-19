@@ -19,29 +19,22 @@
   ],
   "sideEffects": false,
   "scripts": {
-    "lint": "eslint -f codeframe src/**/*.ts test/**/*.ts",
-    "lint:fix": "eslint --fix src/**/*.ts test/**/*.ts",
+    "lint": "eslint --ext .ts .",
+    "lint:fix": "eslint --fix --ext .ts .",
     "prepare": "npm run build",
     "build": "tsc -p tsconfig.build.json",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:ci": "jest --coverage --no-cache",
-    "semantic-release": "semantic-release"
+    "test:ci": "jest --coverage --no-cache"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/jest": "25.1.4",
-    "@types/node": "13.9.8",
-    "@typescript-eslint/eslint-plugin": "2.26.0",
-    "@typescript-eslint/parser": "2.26.0",
-    "eslint": "6.8.0",
-    "eslint-config-xo-space": "0.24.0",
-    "eslint-config-xo-typescript": "0.27.0",
-    "eslint-plugin-import": "2.20.2",
-    "jest": "25.2.4",
-    "semantic-release": "17.0.4",
-    "ts-jest": "25.3.0",
-    "typescript": "3.8.3"
+    "@ctrl/eslint-config": "3.0.0",
+    "@types/jest": "27.0.2",
+    "@types/node": "16.11.1",
+    "jest": "27.3.1",
+    "ts-jest": "27.0.7",
+    "typescript": "4.4.4"
   },
   "publishConfig": {
     "access": "public"
