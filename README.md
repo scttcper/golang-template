@@ -50,5 +50,21 @@ parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { categories });
 // 1;2;3;
 ```
 
+#### index
+```ts
+const data = {
+  object: {
+    value: 'foo'
+  },
+  array: [
+    'bar'
+  ]
+}
+parse('{{ index .object "value" }}', data);
+//foo
+parse('{{ index .array 0 }}', data);
+//foo
+```
+
 ### Warnings
-This is probably not safe for user imput.
+This is probably not safe for user input.
