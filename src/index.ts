@@ -127,7 +127,6 @@ export function indexReplace(str: string, variables: object): string {
   let m: RegExpMatchArray | null;
 
   while ((m = regex.exec(result)) !== null) {
-    console.log(m);
     const all = m[0];
     const prop = m[1];
     const index = m[2];
