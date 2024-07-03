@@ -41,7 +41,7 @@ export function joinReplace(str: string, variables: Record<string, any>): string
 }
 
 export function ifElseReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*if\s*(.+?)\s*}}([\S\s]*?){{\s*else\s*}}([\S\s]*?){{\s*end\s*}}/;
+  const regex = /{{\s*if\s*(.+?)\s*}}([\S\s]*?)({{\s*else\s*}}([\S\s]*?))?{{\s*end\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
@@ -51,7 +51,7 @@ export function ifElseReplace(str: string, variables: Record<string, any>): stri
     const all = m[0];
     const condition = m[1];
     const onTrue = m[2];
-    const onFalse = m[3];
+    const onFalse = m[4] || '';
 
     if (condition.startsWith('.')) {
       let conditionResultState = false;
