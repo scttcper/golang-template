@@ -37,7 +37,7 @@ describe('ifElse', () => {
     );
   });
   it('should allow true with no else block', () => {
-    const keywords = '';
+    const keywords = 'swag';
     expect(ifElseReplace('{{ if .keywords }}hello{{end}}', { keywords })).toBe(
       'hello',
     );
