@@ -36,6 +36,18 @@ describe('ifElse', () => {
       'nothing',
     );
   });
+  it('should allow true with no else block', () => {
+    const keywords = '';
+    expect(ifElseReplace('{{ if .keywords }}hello{{end}}', { keywords })).toBe(
+      'hello',
+    );
+  });
+  it('should allow false with no else block', () => {
+    const keywords = '';
+    expect(ifElseReplace('{{ if .keywords }}hello{{end}}', { keywords })).toBe(
+      '',
+    );
+  });
 });
 
 describe('range', () => {
