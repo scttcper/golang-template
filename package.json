@@ -4,7 +4,7 @@
   "description": "Basic golang template parsing in js",
   "author": "Scott Cooper <scttcper@gmail.com>",
   "license": "MIT",
-  "repository": "typectrl/golang-template",
+  "repository": "scttcper/golang-template",
   "keywords": [
     "typescript",
     "golang",
