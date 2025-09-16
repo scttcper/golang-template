@@ -36,7 +36,8 @@
     "vitest": "0.15.2"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "release": {
     "branches": [
@@ -45,5 +46,6 @@
   },
   "engines": {
     "node": ">=8.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.15.0"
 }
