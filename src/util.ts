@@ -6,7 +6,7 @@
  */
 export function get(object: Record<string, any>, path: string | any[]): any {
   if (typeof path === 'string') {
-    path = path.split('.').filter((key) => key.length);
+    path = path.split('.').filter(key => key.length);
   }
 
   return path.reduce((dive, key) => dive?.[key], object);

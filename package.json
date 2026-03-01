@@ -2,42 +2,57 @@
   "name": "@ctrl/golang-template",
   "version": "0.0.0-placeholder",
   "description": "Basic golang template parsing in js",
-  "author": "Scott Cooper <scttcper@gmail.com>",
-  "license": "MIT",
-  "repository": "scttcper/golang-template",
   "keywords": [
-    "typescript",
     "golang",
+    "re_replace",
     "template",
     "templating",
-    "re_replace"
+    "typescript"
   ],
-  "main": "./dist/index.js",
-  "typings": "./dist/index.d.ts",
+  "license": "MIT",
+  "author": "Scott Cooper <scttcper@gmail.com>",
+  "repository": "scttcper/golang-template",
   "files": [
     "dist"
   ],
   "sideEffects": false,
-  "scripts": {
-    "lint": "eslint --ext .ts .",
-    "lint:fix": "eslint --fix --ext .ts .",
-    "prepare": "npm run build",
-    "build": "tsc -p tsconfig.build.json",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ci": "vitest run --coverage --reporter=default --reporter=junit --outputFile=./junit.xml"
-  },
-  "devDependencies": {
-    "@ctrl/eslint-config": "3.4.10",
-    "@types/node": "18.7.15",
-    "@vitest/coverage-c8": "^0.23.1",
-    "c8": "7.11.3",
-    "typescript": "4.8.2",
-    "vitest": "0.15.2"
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
   },
   "publishConfig": {
     "access": "public",
     "provenance": true
+  },
+  "scripts": {
+    "lint": "oxlint . && oxfmt --check",
+    "lint:fix": "oxlint . --fix && oxfmt",
+    "prepare": "npm run build",
+    "build": "tsdown src/index.ts --format esm --format cjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=./junit.xml"
+  },
+  "devDependencies": {
+    "@ctrl/oxlint-config": "1.4.2",
+    "@sindresorhus/tsconfig": "8.1.0",
+    "@types/node": "25.3.3",
+    "oxfmt": "0.35.0",
+    "oxlint": "1.50.0",
+    "tsdown": "0.21.0-beta.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.18"
   },
   "release": {
     "branches": [
@@ -45,7 +60,7 @@
     ]
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=18"
   },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.30.3"
 }

@@ -11,6 +11,8 @@ pids
 # Coverage directory
 coverage
 
+junit.xml
+
 # node-waf configuration
 .lock-wscript
 

@@ -1,52 +1,37 @@
 import { describe, expect, it } from 'vitest';
 
-import {
-  ifElseReplace,
-  joinReplace,
-  parse,
-  rangeReplace,
-  reReplace,
-  variableReplace,
-} from '../src';
+import { compile, parse } from '../src';
 
 describe('reReplace', () => {
   it('should rereplace string', () => {
     const category = '123$';
-    expect(reReplace('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category })).toBe('123%');
+    expect(parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category })).toBe('123%');
   });
 });
 
 describe('joinReplace', () => {
   it('should join string', () => {
     const categories = ['1', '2', '3'];
-    expect(joinReplace('{{ join .categories "," }}', { categories })).toBe(categories.join(','));
+    expect(parse('{{ join .categories "," }}', { categories })).toBe(categories.join(','));
   });
 });
 
 describe('ifElse', () => {
   it('should allow true', () => {
     const keywords = 'swag';
-    expect(ifElseReplace('{{ if .keywords }}hello{{else}}nothing{{end}}', { keywords })).toBe(
-      'hello',
-    );
+    expect(parse('{{ if .keywords }}hello{{else}}nothing{{end}}', { keywords })).toBe('hello');
   });
   it('should allow false', () => {
     const keywords = '';
-    expect(ifElseReplace('{{ if .keywords }}hello{{else}}nothing{{end}}', { keywords })).toBe(
-      'nothing',
-    );
+    expect(parse('{{ if .keywords }}hello{{else}}nothing{{end}}', { keywords })).toBe('nothing');
   });
   it('should allow true with no else block', () => {
     const keywords = 'swag';
-    expect(ifElseReplace('{{ if .keywords }}hello{{end}}', { keywords })).toBe(
-      'hello',
-    );
+    expect(parse('{{ if .keywords }}hello{{end}}', { keywords })).toBe('hello');
   });
   it('should allow false with no else block', () => {
     const keywords = '';
-    expect(ifElseReplace('{{ if .keywords }}hello{{end}}', { keywords })).toBe(
-      '',
-    );
+    expect(parse('{{ if .keywords }}hello{{end}}', { keywords })).toBe('');
   });
 });
 
@@ -54,52 +39,61 @@ describe('nested ifElse', () => {
   it('should handle nested if inside true branch (issue #93)', () => {
     const data = { option: true, deeperOption: false };
     const template = `{{ if .option }}outer-true {{ if .deeperOption }}inner-true{{ else }}inner-false{{ end }}{{ else }}outer-false{{ end }}`;
-    expect(ifElseReplace(template, data)).toBe('outer-true inner-false');
+    expect(parse(template, data)).toBe('outer-true inner-false');
   });
   it('should handle nested if where outer is false', () => {
     const data = { option: false, deeperOption: true };
     const template = `{{ if .option }}{{ if .deeperOption }}inner{{ else }}not-inner{{ end }}{{ else }}outer-false{{ end }}`;
-    expect(ifElseReplace(template, data)).toBe('outer-false');
+    expect(parse(template, data)).toBe('outer-false');
   });
   it('should handle nested if without else blocks', () => {
     const data = { a: true, b: true };
     const template = `{{ if .a }}{{ if .b }}both-true{{ end }}{{ end }}`;
-    expect(ifElseReplace(template, data)).toBe('both-true');
+    expect(parse(template, data)).toBe('both-true');
   });
   it('should handle 3 levels of nesting', () => {
     const data = { a: true, b: true, c: false };
     const template = `{{ if .a }}{{ if .b }}{{ if .c }}c{{ else }}not-c{{ end }}{{ end }}{{ end }}`;
-    expect(ifElseReplace(template, data)).toBe('not-c');
+    expect(parse(template, data)).toBe('not-c');
   });
 });
 
 describe('range', () => {
   it('should expand range', () => {
     const categories = ['1', '2', '3'];
-    expect(rangeReplace('{{ range .categories }}{{.}};{{end}}', { categories })).toBe(
-      categories.join(';') + ';',
+    expect(parse('{{ range .categories }}{{.}};{{end}}', { categories })).toBe(
+      `${categories.join(';')};`,
     );
   });
   it('should allow no range variable', () => {
-    expect(rangeReplace('{{ range .categories }}{{.}};{{end}}', {})).toBe('');
+    expect(parse('{{ range .categories }}{{.}};{{end}}', {})).toBe('');
   });
 });
 
 describe('variable', () => {
   it('should replace variable', () => {
     const categories = 'swag';
-    expect(variableReplace('{{ .categories }}', { categories })).toBe(categories);
+    expect(parse('{{ .categories }}', { categories })).toBe(categories);
   });
   it('should replace variable several layers deep', () => {
     const categories = { test: '123' };
-    expect(variableReplace('{{ .categories.test }}', { categories })).toBe(categories.test);
+    expect(parse('{{ .categories.test }}', { categories })).toBe(categories.test);
   });
   it('should replace multiple variable', () => {
     const party = 'gucci';
     const categories = 'swag';
-    expect(variableReplace('{{ .party }}{{ .categories }}', { categories, party })).toBe(
-      party + categories,
-    );
+    expect(parse('{{ .party }}{{ .categories }}', { categories, party })).toBe(party + categories);
+  });
+});
+
+describe('index', () => {
+  it('should index into array by number', () => {
+    const arr = ['a', 'b', 'c'];
+    expect(parse('{{ index .arr 1 }}', { arr })).toBe('b');
+  });
+  it('should index into object by string key', () => {
+    const obj = { foo: 'bar' };
+    expect(parse('{{ index .obj "foo" }}', { obj })).toBe('bar');
   });
 });
 
@@ -128,5 +122,49 @@ describe('parse', () => {
         { keywords, categories },
       ),
     ).toBe('1;2;3;zzz');
+  });
+});
+
+describe('compile', () => {
+  it('should compile once and render many times', () => {
+    const tmpl = compile('{{ if .name }}Hello {{ .name }}!{{ end }}');
+    expect(tmpl.render({ name: 'World' })).toBe('Hello World!');
+    expect(tmpl.render({ name: 'Alice' })).toBe('Hello Alice!');
+    expect(tmpl.render({})).toBe('');
+  });
+});
+
+describe('correctness', () => {
+  it('should handle values containing $& without corruption', () => {
+    expect(parse('{{ .value }}', { value: '$&' })).toBe('$&');
+    expect(parse('{{ .value }}', { value: "$'" })).toBe("$'");
+    expect(parse('{{ .value }}', { value: '$`' })).toBe('$`');
+  });
+
+  it('should render undefined variable as empty string', () => {
+    expect(parse('{{ .missing }}', {})).toBe('');
+  });
+
+  it('should treat non-zero number as truthy in if', () => {
+    expect(parse('{{ if .count }}yes{{ end }}', { count: 5 })).toBe('yes');
+  });
+
+  it('should treat zero as falsy in if', () => {
+    expect(parse('{{ if .count }}yes{{ end }}', { count: 0 })).toBe('');
+  });
+
+  it('should handle {{ . }} with spaces in range', () => {
+    const items = ['a', 'b', 'c'];
+    expect(parse('{{ range .items }}{{ . }};{{ end }}', { items })).toBe('a;b;c;');
+  });
+});
+
+describe('error handling', () => {
+  it('should throw SyntaxError for unclosed {{', () => {
+    expect(() => parse('hello {{ world', {})).toThrow(SyntaxError);
+  });
+
+  it('should throw SyntaxError for unexpected {{ end }}', () => {
+    expect(() => parse('{{ end }}', {})).toThrow(SyntaxError);
   });
 });
