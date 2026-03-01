@@ -1,11 +1,17 @@
 import { get } from './util';
 
+const reReplaceRegex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
+const joinReplaceRegex = /{{\s*join\s+\.(.+?)\s+"(.*?)"\s*}}/;
+const ifElseRegex = /{{\s*if\s*([^}]+?)\s*}}((?:(?!{{\s*if\b)[\S\s])*?)({{\s*else\s*}}((?:(?!{{\s*if\b)[\S\s])*?))?{{\s*end\s*}}/;
+const rangeRegex = /{{\s*range\s*(.+?)\s*}}(.*?){{\.}}(.*?){{end}}/;
+const variableRegex = /{{\s*(\..+?)\s*}}/;
+const indexRegex = /{{\s*index\s*(\..+?)\s+(.+?)\s*}}/;
+
 export function reReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*re_replace\s+(\..+?)\s+"(.*?)"\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = reReplaceRegex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
     const regexp = m[2];
@@ -22,11 +28,10 @@ export function reReplace(str: string, variables: Record<string, any>): string {
 }
 
 export function joinReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*join\s+\.(.+?)\s+"(.*?)"\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = joinReplaceRegex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
     const delimiter = m[2];
@@ -41,11 +46,10 @@ export function joinReplace(str: string, variables: Record<string, any>): string
 }
 
 export function ifElseReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*if\s*([^}]+?)\s*}}((?:(?!{{\s*if\b)[\S\s])*?)({{\s*else\s*}}((?:(?!{{\s*if\b)[\S\s])*?))?{{\s*end\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = ifElseRegex.exec(result)) !== null) {
     let conditionResult: string;
 
     const all = m[0];
@@ -80,11 +84,10 @@ export function ifElseReplace(str: string, variables: Record<string, any>): stri
 }
 
 export function rangeReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*range\s*(.+?)\s*}}(.*?){{\.}}(.*?){{end}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = rangeRegex.exec(result)) !== null) {
     let expanded = '';
 
     const all = m[0];
@@ -106,11 +109,10 @@ export function rangeReplace(str: string, variables: Record<string, any>): strin
 }
 
 export function variableReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*(\..+?)\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = variableRegex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
 
@@ -122,11 +124,10 @@ export function variableReplace(str: string, variables: Record<string, any>): st
 }
 
 export function indexReplace(str: string, variables: Record<string, any>): string {
-  const regex = /{{\s*index\s*(\..+?)\s+(.+?)\s*}}/;
   let result = str;
   let m: RegExpMatchArray | null;
 
-  while ((m = regex.exec(result)) !== null) {
+  while ((m = indexRegex.exec(result)) !== null) {
     const all = m[0];
     const prop = m[1];
     const index = m[2];
