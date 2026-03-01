@@ -51,7 +51,7 @@ export function tokenize(template: string): RawToken[] {
 export function buildAST(tokens: RawToken[]): Node[] {
   const stack: Node[][] = [[]];
   const blockTypes: Array<'if-true' | 'if-false' | 'with-true' | 'with-false' | 'range'> = [];
-  const current = (): Node[] => stack[stack.length - 1];
+  const current = (): Node[] => stack[stack.length - 1]!;
 
   for (const token of tokens) {
     if ('raw' in token) {
@@ -69,8 +69,8 @@ export function buildAST(tokens: RawToken[]): Node[] {
         throw new SyntaxError('Unexpected {{ else }}');
       }
       stack.pop();
-      const parent = stack[stack.length - 1];
-      const node = parent[parent.length - 1] as Extract<Node, { type: 'if' | 'with' }>;
+      const parent = stack[stack.length - 1]!;
+      const node = parent[parent.length - 1]! as Extract<Node, { type: 'if' | 'with' }>;
       stack.push(node.falseBranch);
       blockTypes[blockTypes.length - 1] = blockType === 'if-true' ? 'if-false' : 'with-false';
     } else if (tag === 'end') {
@@ -157,7 +157,7 @@ export function buildAST(tokens: RawToken[]): Node[] {
           `re_replace requires two quoted arguments (pattern and replacement), got ${args.length}`,
         );
       }
-      current().push({ type: 're_replace', path, pattern: args[0], replacement: args[1] });
+      current().push({ type: 're_replace', path, pattern: args[0]!, replacement: args[1]! });
     } else if (tag.startsWith('.')) {
       current().push({ type: 'var', path: parsePath(tag) });
     } else {
@@ -168,7 +168,7 @@ export function buildAST(tokens: RawToken[]): Node[] {
   if (stack.length !== 1) {
     throw new SyntaxError('Unclosed template block (missing {{ end }})');
   }
-  return stack[0];
+  return stack[0]!;
 }
 
 function isTruthy(value: unknown): boolean {

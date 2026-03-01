@@ -39,6 +39,7 @@
     "lint": "oxlint . && oxfmt --check",
     "lint:fix": "oxlint . --fix && oxfmt",
     "prepare": "npm run build",
+    "typecheck": "tsc --noEmit",
     "build": "tsdown src/index.ts --format esm --format cjs",
     "test": "vitest run",
     "test:watch": "vitest",
