@@ -11,7 +11,10 @@
   ],
   "license": "MIT",
   "author": "Scott Cooper <scttcper@gmail.com>",
-  "repository": "scttcper/golang-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scttcper/golang-template.git"
+  },
   "files": [
     "dist"
   ],
