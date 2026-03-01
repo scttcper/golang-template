@@ -1,5 +1,8 @@
 import type { Condition, Node, RawToken, Variables } from './types';
-import { get } from './util';
+
+function get(object: Record<string, unknown>, path: string[]): unknown {
+  return path.reduce((dive: unknown, key) => (dive as Record<string, unknown>)?.[key], object);
+}
 
 function parsePath(dotPath: string): string[] {
   return dotPath

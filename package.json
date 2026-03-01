@@ -42,8 +42,7 @@
     "typecheck": "tsc --noEmit",
     "build": "tsdown src/index.ts --format esm --format cjs",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ci": "vitest run --reporter=default --reporter=junit --outputFile=./junit.xml"
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@ctrl/oxlint-config": "1.4.2",
