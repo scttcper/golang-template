@@ -72,7 +72,7 @@ const data = {
   array: ['bar'],
 };
 parse('{{ index .object "value" }}', data); // 'foo'
-parse('{{ index .array 0 }}', data);        // 'bar'
+parse('{{ index .array 0 }}', data); // 'bar'
 ```
 
 ### Warnings
