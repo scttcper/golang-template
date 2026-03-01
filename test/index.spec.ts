@@ -194,4 +194,10 @@ describe('error handling', () => {
   it('should throw SyntaxError for unexpected {{ end }}', () => {
     expect(() => parse('{{ end }}', {})).toThrow(SyntaxError);
   });
+  it('should throw SyntaxError for re_replace with missing replacement argument', () => {
+    expect(() => parse('{{ re_replace .category "[^a-z]+" }}', {})).toThrow(SyntaxError);
+  });
+  it('should throw SyntaxError for re_replace with no arguments', () => {
+    expect(() => parse('{{ re_replace .category }}', {})).toThrow(SyntaxError);
+  });
 });

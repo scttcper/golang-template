@@ -140,6 +140,11 @@ export function buildAST(tokens: RawToken[]): Node[] {
       const spaceIdx = rest.indexOf(' ');
       const path = parsePath(rest.slice(0, spaceIdx));
       const args = parseQuotedArgs(rest.slice(spaceIdx + 1).trim());
+      if (args.length !== 2) {
+        throw new SyntaxError(
+          `re_replace requires two quoted arguments (pattern and replacement), got ${args.length}`,
+        );
+      }
       current().push({ type: 're_replace', path, pattern: args[0], replacement: args[1] });
     } else if (tag.startsWith('.')) {
       current().push({ type: 'var', path: parsePath(tag) });
