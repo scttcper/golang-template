@@ -125,6 +125,29 @@ describe('parse', () => {
   });
 });
 
+describe('with', () => {
+  it('should render trueBranch with value as dot context', () => {
+    expect(parse('{{ with .name }}Hello {{ . }}!{{ end }}', { name: 'World' })).toBe(
+      'Hello World!',
+    );
+  });
+  it('should skip block when value is falsy', () => {
+    expect(parse('{{ with .name }}Hello {{ . }}!{{ end }}', { name: '' })).toBe('');
+  });
+  it('should render else branch when value is falsy', () => {
+    expect(parse('{{ with .name }}Hello {{ . }}{{ else }}nobody{{ end }}', { name: '' })).toBe(
+      'nobody',
+    );
+  });
+  it('should skip block when variable is missing', () => {
+    expect(parse('{{ with .name }}Hello {{ . }}!{{ end }}', {})).toBe('');
+  });
+  it('should support nested with', () => {
+    const data = { user: { city: 'NYC' } };
+    expect(parse('{{ with .user }}{{ with .city }}{{ . }}{{ end }}{{ end }}', data)).toBe('NYC');
+  });
+});
+
 describe('if and / or / not (issue #89)', () => {
   it('and: true when both truthy', () => {
     const keywords = { kunj: 'kunj', hi: 'hi' };

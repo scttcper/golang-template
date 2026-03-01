@@ -50,7 +50,7 @@ export function tokenize(template: string): RawToken[] {
 
 export function buildAST(tokens: RawToken[]): Node[] {
   const stack: Node[][] = [[]];
-  const blockTypes: Array<'if-true' | 'if-false' | 'range'> = [];
+  const blockTypes: Array<'if-true' | 'if-false' | 'with-true' | 'with-false' | 'range'> = [];
   const current = (): Node[] => stack[stack.length - 1];
 
   for (const token of tokens) {
@@ -64,14 +64,15 @@ export function buildAST(tokens: RawToken[]): Node[] {
     if (tag === '.') {
       current().push({ type: 'dot' });
     } else if (tag === 'else') {
-      if (blockTypes[blockTypes.length - 1] !== 'if-true') {
+      const blockType = blockTypes[blockTypes.length - 1];
+      if (blockType !== 'if-true' && blockType !== 'with-true') {
         throw new SyntaxError('Unexpected {{ else }}');
       }
       stack.pop();
       const parent = stack[stack.length - 1];
-      const ifNode = parent[parent.length - 1] as Extract<Node, { type: 'if' }>;
-      stack.push(ifNode.falseBranch);
-      blockTypes[blockTypes.length - 1] = 'if-false';
+      const node = parent[parent.length - 1] as Extract<Node, { type: 'if' | 'with' }>;
+      stack.push(node.falseBranch);
+      blockTypes[blockTypes.length - 1] = blockType === 'if-true' ? 'if-false' : 'with-false';
     } else if (tag === 'end') {
       if (stack.length === 1) {
         throw new SyntaxError('Unexpected {{ end }}');
@@ -111,6 +112,17 @@ export function buildAST(tokens: RawToken[]): Node[] {
       current().push(ifNode);
       stack.push(ifNode.trueBranch);
       blockTypes.push('if-true');
+    } else if (tag.startsWith('with ')) {
+      const path = parsePath(tag.slice(5).trim());
+      const withNode: Extract<Node, { type: 'with' }> = {
+        type: 'with',
+        path,
+        trueBranch: [],
+        falseBranch: [],
+      };
+      current().push(withNode);
+      stack.push(withNode.trueBranch);
+      blockTypes.push('with-true');
     } else if (tag.startsWith('range ')) {
       const path = parsePath(tag.slice(6).trim());
       const rangeNode: Extract<Node, { type: 'range' }> = { type: 'range', path, body: [] };
@@ -222,6 +234,19 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
           vars,
           context,
         );
+        break;
+      }
+      case 'with': {
+        const val = get(vars, node.path);
+        if (isTruthy(val)) {
+          const innerVars =
+            val != null && typeof val === 'object' && !Array.isArray(val)
+              ? (val as Variables)
+              : vars;
+          out += render(node.trueBranch, innerVars, val);
+        } else {
+          out += render(node.falseBranch, vars, context);
+        }
         break;
       }
       case 'range': {
