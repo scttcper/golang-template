@@ -40,6 +40,30 @@ parse('{{ if .keywords }}{{ .keywords }}{{else}}nothing{{end}}', { keywords: 'sw
 // 'swag'
 ```
 
+#### if with and / or / not
+
+```ts
+parse('{{ if and .a .b }}both{{else}}no{{end}}', { a: 'x', b: 'y' });
+// 'both'
+
+parse('{{ if or .a .b }}either{{else}}neither{{end}}', { a: '', b: 'y' });
+// 'either'
+
+parse('{{ if not .disabled }}enabled{{end}}', { disabled: false });
+// 'enabled'
+```
+
+#### with
+
+```ts
+// Renders the block with . set to the value; skips if falsy
+parse('{{ with .user }}Hello {{ . }}!{{ end }}', { user: 'World' });
+// 'Hello World!'
+
+parse('{{ with .user }}Hello {{ . }}{{ else }}nobody{{ end }}', { user: '' });
+// 'nobody'
+```
+
 #### join
 
 ```ts
