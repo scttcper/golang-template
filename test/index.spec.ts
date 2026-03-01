@@ -50,6 +50,29 @@ describe('ifElse', () => {
   });
 });
 
+describe('nested ifElse', () => {
+  it('should handle nested if inside true branch (issue #93)', () => {
+    const data = { option: true, deeperOption: false };
+    const template = `{{ if .option }}outer-true {{ if .deeperOption }}inner-true{{ else }}inner-false{{ end }}{{ else }}outer-false{{ end }}`;
+    expect(ifElseReplace(template, data)).toBe('outer-true inner-false');
+  });
+  it('should handle nested if where outer is false', () => {
+    const data = { option: false, deeperOption: true };
+    const template = `{{ if .option }}{{ if .deeperOption }}inner{{ else }}not-inner{{ end }}{{ else }}outer-false{{ end }}`;
+    expect(ifElseReplace(template, data)).toBe('outer-false');
+  });
+  it('should handle nested if without else blocks', () => {
+    const data = { a: true, b: true };
+    const template = `{{ if .a }}{{ if .b }}both-true{{ end }}{{ end }}`;
+    expect(ifElseReplace(template, data)).toBe('both-true');
+  });
+  it('should handle 3 levels of nesting', () => {
+    const data = { a: true, b: true, c: false };
+    const template = `{{ if .a }}{{ if .b }}{{ if .c }}c{{ else }}not-c{{ end }}{{ end }}{{ end }}`;
+    expect(ifElseReplace(template, data)).toBe('not-c');
+  });
+});
+
 describe('range', () => {
   it('should expand range', () => {
     const categories = ['1', '2', '3'];
