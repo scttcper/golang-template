@@ -1,9 +1,0 @@
-{
-  "root": true,
-  "env": {
-    "node": true,
-    "jest": true
-  },
-  "extends": ["@ctrl/eslint-config"],
-  "rules": {}
-}
