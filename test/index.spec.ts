@@ -125,6 +125,33 @@ describe('parse', () => {
   });
 });
 
+describe('if and / or / not (issue #89)', () => {
+  it('and: true when both truthy', () => {
+    const keywords = { kunj: 'kunj', hi: 'hi' };
+    expect(
+      parse('{{ if and .keywords.kunj .keywords.hi }}yes{{else}}no{{end}}', { keywords }),
+    ).toBe('yes');
+  });
+  it('and: false when one is falsy', () => {
+    const keywords = { kunj: 'kunj', hi: '' };
+    expect(
+      parse('{{ if and .keywords.kunj .keywords.hi }}yes{{else}}no{{end}}', { keywords }),
+    ).toBe('no');
+  });
+  it('or: true when one is truthy', () => {
+    expect(parse('{{ if or .a .b }}yes{{else}}no{{end}}', { a: '', b: 'x' })).toBe('yes');
+  });
+  it('or: false when both falsy', () => {
+    expect(parse('{{ if or .a .b }}yes{{else}}no{{end}}', { a: '', b: '' })).toBe('no');
+  });
+  it('not: true when value is falsy', () => {
+    expect(parse('{{ if not .a }}yes{{else}}no{{end}}', { a: '' })).toBe('yes');
+  });
+  it('not: false when value is truthy', () => {
+    expect(parse('{{ if not .a }}yes{{else}}no{{end}}', { a: 'x' })).toBe('no');
+  });
+});
+
 describe('compile', () => {
   it('should compile once and render many times', () => {
     const tmpl = compile('{{ if .name }}Hello {{ .name }}!{{ end }}');

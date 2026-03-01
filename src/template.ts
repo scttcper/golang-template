@@ -1,4 +1,4 @@
-import type { Node, RawToken, Variables } from './types';
+import type { Condition, Node, RawToken, Variables } from './types';
 import { get } from './util';
 
 function parsePath(dotPath: string): string[] {
@@ -79,10 +79,32 @@ export function buildAST(tokens: RawToken[]): Node[] {
       stack.pop();
       blockTypes.pop();
     } else if (tag.startsWith('if ')) {
-      const path = parsePath(tag.slice(3).trim());
+      const rest = tag.slice(3).trim();
+      let condition: Condition;
+      if (rest.startsWith('and ')) {
+        const paths = rest
+          .slice(4)
+          .trim()
+          .split(' ')
+          .filter(s => s.length > 0)
+          .map(parsePath);
+        condition = { op: 'and', paths };
+      } else if (rest.startsWith('or ')) {
+        const paths = rest
+          .slice(3)
+          .trim()
+          .split(' ')
+          .filter(s => s.length > 0)
+          .map(parsePath);
+        condition = { op: 'or', paths };
+      } else if (rest.startsWith('not ')) {
+        condition = { op: 'not', path: parsePath(rest.slice(4).trim()) };
+      } else {
+        condition = { op: 'var', path: parsePath(rest) };
+      }
       const ifNode: Extract<Node, { type: 'if' }> = {
         type: 'if',
-        path,
+        condition,
         trueBranch: [],
         falseBranch: [],
       };
@@ -151,6 +173,23 @@ function isTruthy(value: unknown): boolean {
   return true;
 }
 
+function evalCondition(cond: Condition, vars: Variables): boolean {
+  switch (cond.op) {
+    case 'var': {
+      return isTruthy(get(vars, cond.path));
+    }
+    case 'and': {
+      return cond.paths.every(path => isTruthy(get(vars, path)));
+    }
+    case 'or': {
+      return cond.paths.some(path => isTruthy(get(vars, path)));
+    }
+    case 'not': {
+      return !isTruthy(get(vars, cond.path));
+    }
+  }
+}
+
 function asArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
@@ -173,8 +212,11 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
         break;
       }
       case 'if': {
-        const val = get(vars, node.path);
-        out += render(isTruthy(val) ? node.trueBranch : node.falseBranch, vars, context);
+        out += render(
+          evalCondition(node.condition, vars) ? node.trueBranch : node.falseBranch,
+          vars,
+          context,
+        );
         break;
       }
       case 'range': {
