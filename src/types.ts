@@ -17,4 +17,4 @@ export type Node =
   | { type: 'range'; path: string[]; body: Node[] }
   | { type: 'join'; path: string[]; delimiter: string }
   | { type: 'index'; path: string[]; key: string | number }
-  | { type: 're_replace'; path: string[]; pattern: string; replacement: string };
+  | { type: 're_replace'; path: string[]; pattern: RegExp; replacement: string };

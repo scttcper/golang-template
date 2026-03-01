@@ -1,7 +1,17 @@
 import type { Condition, Node, RawToken, Variables } from './types';
 
 function get(object: Record<string, unknown>, path: string[]): unknown {
-  return path.reduce((dive: unknown, key) => (dive as Record<string, unknown>)?.[key], object);
+  if (path.length === 1) {
+    return (object as Record<string, unknown>)[path[0]!];
+  }
+  let current: unknown = object;
+  for (const segment of path) {
+    if (current == null) {
+      return undefined;
+    }
+    current = (current as Record<string, unknown>)[segment];
+  }
+  return current;
 }
 
 function parsePath(dotPath: string): string[] {
@@ -160,7 +170,12 @@ export function buildAST(tokens: RawToken[]): Node[] {
           `re_replace requires two quoted arguments (pattern and replacement), got ${args.length}`,
         );
       }
-      current().push({ type: 're_replace', path, pattern: args[0]!, replacement: args[1]! });
+      current().push({
+        type: 're_replace',
+        path,
+        pattern: new RegExp(args[0]!, 'g'),
+        replacement: args[1]!,
+      });
     } else if (tag.startsWith('.')) {
       current().push({ type: 'var', path: parsePath(tag) });
     } else {
@@ -253,7 +268,8 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
         break;
       }
       case 'range': {
-        for (const item of asArray(get(vars, node.path))) {
+        const arr = asArray(get(vars, node.path));
+        for (const item of arr) {
           out += render(node.body, vars, item);
         }
         break;
@@ -271,7 +287,7 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
       case 're_replace': {
         const val = get(vars, node.path);
         const str = val == null ? '' : String(val);
-        out += str.replaceAll(new RegExp(node.pattern, 'g'), node.replacement);
+        out += str.replaceAll(node.pattern, node.replacement);
         break;
       }
     }

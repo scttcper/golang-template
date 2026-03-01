@@ -42,7 +42,8 @@
     "typecheck": "tsc --noEmit",
     "build": "tsdown src/index.ts --format esm --format cjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "bench": "vitest bench"
   },
   "devDependencies": {
     "@ctrl/oxlint-config": "1.4.2",
