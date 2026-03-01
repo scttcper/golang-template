@@ -73,7 +73,13 @@ parse('{{ with .user }}Hello {{ . }}{{ else }}nobody{{ end }}', { user: '' });
 const categories = ['a', 'b', 'c'];
 parse('{{ range .categories }}{{ . }};{{ end }}', { categories });
 // 'a;b;c;'
+
+const items = [{ name: 'alice' }, { name: 'bob' }];
+parse('{{ range .items }}{{ .name }};{{ end }}', { items });
+// 'alice;bob;'
 ```
+
+Inside `range`, `{{ .Field }}` resolves against the current item only. `{{ $.RootVar }}` is still unsupported.
 
 ### index
 
@@ -116,7 +122,7 @@ parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category: '123$special
 | `{{ index .arr 0 }}` / `{{ index .obj "key" }}`                | ✅        |
 | `{{ join }}` (extension)                                       | ✅        |
 | `{{ re_replace }}` (extension)                                 | ✅        |
-| `{{ range }}` with `{{ .Field }}` on items                     | ❌        |
+| `{{ range }}` with `{{ .Field }}` on items                     | ✅        |
 | `{{ if eq .a .b }}` / `{{ if gt .a .b }}` etc.                 | ❌        |
 | `{{ $var := .val }}` variable assignment                       | ❌        |
 | `{{ $.RootVar }}` from inside range/with                       | ❌        |

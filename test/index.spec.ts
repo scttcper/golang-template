@@ -68,6 +68,26 @@ describe('range', () => {
   it('should allow no range variable', () => {
     expect(parse('{{ range .categories }}{{.}};{{end}}', {})).toBe('');
   });
+  it('should allow item field access inside range', () => {
+    const items = [{ name: 'a' }, { name: 'b' }, { name: 'c' }];
+    expect(parse('{{ range .items }}{{ .name }};{{ end }}', { items })).toBe('a;b;c;');
+  });
+  it('should allow nested item field access inside range', () => {
+    const items = [{ user: { name: 'a' } }, { user: { name: 'b' } }];
+    expect(parse('{{ range .items }}{{ .user.name }};{{ end }}', { items })).toBe('a;b;');
+  });
+  it('should render missing item field as empty string inside range', () => {
+    const items = [{ name: 'a' }, {}, { name: 'c' }];
+    expect(parse('{{ range .items }}{{ .name }};{{ end }}', { items })).toBe('a;;c;');
+  });
+  it('should not fall back to root vars for item field access inside range', () => {
+    const data = { name: 'root', items: [{}, {}] };
+    expect(parse('{{ range .items }}{{ .name }};{{ end }}', data)).toBe(';;');
+  });
+  it('should preserve dot context behavior for primitive and object items', () => {
+    const items = [1, { name: 'x' }];
+    expect(parse('{{ range .items }}{{ . }};{{ end }}', { items })).toBe('1;[object Object];');
+  });
 });
 
 describe('variable', () => {

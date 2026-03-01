@@ -229,6 +229,12 @@ function asArray(value: unknown): unknown[] {
   return Array.isArray(value) ? value : [];
 }
 
+function asObjectScope(value: unknown): Variables {
+  return value != null && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Variables)
+    : {};
+}
+
 export function render(nodes: Node[], vars: Variables, context?: unknown): string {
   let out = '';
   for (const node of nodes) {
@@ -270,7 +276,7 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
       case 'range': {
         const arr = asArray(get(vars, node.path));
         for (const item of arr) {
-          out += render(node.body, vars, item);
+          out += render(node.body, asObjectScope(item), item);
         }
         break;
       }
