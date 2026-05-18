@@ -132,4 +132,4 @@ parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category: '123$special
 
 ## Warnings
 
-This library is not safe for untrusted user input. The `re_replace` tag compiles user-provided regex patterns at render time, making it vulnerable to ReDoS if patterns are sourced from user data.
+Do not render fully untrusted templates. The `re_replace` tag runs template-provided JavaScript regex patterns, so malicious or careless patterns can still cause excessive CPU use.

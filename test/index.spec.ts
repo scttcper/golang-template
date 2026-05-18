@@ -7,6 +7,10 @@ describe('reReplace', () => {
     const category = '123$';
     expect(parse('{{ re_replace .category "[^a-zA-Z0-9]+" "%" }}', { category })).toBe('123%');
   });
+  it('should reject long replacement input', () => {
+    const tmpl = compile('{{ re_replace .value "a" "b" }}');
+    expect(() => tmpl.render({ value: 'a'.repeat(10_001) })).toThrow(RangeError);
+  });
 });
 
 describe('joinReplace', () => {
@@ -114,6 +118,19 @@ describe('index', () => {
   it('should index into object by string key', () => {
     const obj = { foo: 'bar' };
     expect(parse('{{ index .obj "foo" }}', { obj })).toBe('bar');
+  });
+  it('should reject invalid numeric keys', () => {
+    expect(() => parse('{{ index .arr nope }}', { arr: [] })).toThrow(SyntaxError);
+  });
+  it('should only read own data properties', () => {
+    const obj = JSON.parse('{"__proto__":"safe","constructor":"also safe"}') as Record<
+      string,
+      unknown
+    >;
+    expect(parse('{{ index .obj "__proto__" }} {{ index .obj "constructor" }}', { obj })).toBe(
+      'safe also safe',
+    );
+    expect(parse('{{ index .obj "toString" }}', { obj })).toBe('');
   });
 });
 
@@ -226,6 +243,31 @@ describe('correctness', () => {
   it('should handle {{ . }} with spaces in range', () => {
     const items = ['a', 'b', 'c'];
     expect(parse('{{ range .items }}{{ . }};{{ end }}', { items })).toBe('a;b;c;');
+  });
+
+  it('should not read inherited properties', () => {
+    const vars = Object.create({ secret: 'nope' }) as Record<string, unknown>;
+    vars.visible = 'yep';
+    expect(parse('{{ .secret }}{{ .visible }}', vars)).toBe('yep');
+  });
+
+  it('should support own data properties with prototype-like names', () => {
+    const vars = JSON.parse('{"__proto__":"proto","constructor":"ctor"}') as Record<
+      string,
+      unknown
+    >;
+    expect(parse('{{ .__proto__ }} {{ .constructor }}', vars)).toBe('proto ctor');
+  });
+
+  it('should not invoke getters', () => {
+    const vars = {};
+    Object.defineProperty(vars, 'secret', {
+      enumerable: true,
+      get() {
+        throw new Error('getter should not run');
+      },
+    });
+    expect(parse('{{ .secret }}', vars)).toBe('');
   });
 });
 

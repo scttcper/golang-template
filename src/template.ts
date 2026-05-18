@@ -1,20 +1,58 @@
 import type { Condition, Node, RawToken, Variables } from './types';
 
+const MAX_REPLACE_INPUT_LENGTH = 10_000;
+
+function getOwn(object: unknown, key: string | number): unknown {
+  if (object == null) {
+    return undefined;
+  }
+  if (typeof object !== 'object' && typeof object !== 'function') {
+    return undefined;
+  }
+  const descriptor = Object.getOwnPropertyDescriptor(object, key);
+  return descriptor != null && 'value' in descriptor ? descriptor.value : undefined;
+}
+
+function createScope(value: unknown): Variables {
+  const scope = Object.create(null) as Variables;
+  if (value == null || typeof value !== 'object' || Array.isArray(value)) {
+    return scope;
+  }
+  const descriptors = Object.getOwnPropertyDescriptors(value);
+  for (const [key, descriptor] of Object.entries(descriptors)) {
+    if ('value' in descriptor) {
+      Object.defineProperty(scope, key, {
+        configurable: true,
+        enumerable: true,
+        value: descriptor.value,
+        writable: true,
+      });
+    }
+  }
+  return scope;
+}
+
 function get(object: Record<string, unknown>, path: string[]): unknown {
+  if (path.length === 0) {
+    return object;
+  }
   if (path.length === 1) {
-    return (object as Record<string, unknown>)[path[0]!];
+    return getOwn(object, path[0]!);
   }
   let current: unknown = object;
   for (const segment of path) {
-    if (current == null) {
+    current = getOwn(current, segment);
+    if (current === undefined) {
       return undefined;
     }
-    current = (current as Record<string, unknown>)[segment];
   }
   return current;
 }
 
 function parsePath(dotPath: string): string[] {
+  if (!dotPath.startsWith('.')) {
+    throw new SyntaxError(`Invalid variable path: ${dotPath}`);
+  }
   return dotPath
     .slice(1)
     .split('.')
@@ -159,6 +197,9 @@ export function buildAST(tokens: RawToken[]): Node[] {
       const key: string | number = keyStr.startsWith('"')
         ? keyStr.slice(1, -1)
         : Number.parseInt(keyStr, 10);
+      if (typeof key === 'number' && Number.isNaN(key)) {
+        throw new SyntaxError(`Invalid index key: ${keyStr}`);
+      }
       current().push({ type: 'index', path, key });
     } else if (tag.startsWith('re_replace ')) {
       const rest = tag.slice(11);
@@ -230,12 +271,10 @@ function asArray(value: unknown): unknown[] {
 }
 
 function asObjectScope(value: unknown): Variables {
-  return value != null && typeof value === 'object' && !Array.isArray(value)
-    ? (value as Variables)
-    : {};
+  return createScope(value);
 }
 
-export function render(nodes: Node[], vars: Variables, context?: unknown): string {
+function renderNodes(nodes: Node[], vars: Variables, context?: unknown): string {
   let out = '';
   for (const node of nodes) {
     switch (node.type) {
@@ -253,7 +292,7 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
         break;
       }
       case 'if': {
-        out += render(
+        out += renderNodes(
           evalCondition(node.condition, vars) ? node.trueBranch : node.falseBranch,
           vars,
           context,
@@ -263,20 +302,17 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
       case 'with': {
         const val = get(vars, node.path);
         if (isTruthy(val)) {
-          const innerVars =
-            val != null && typeof val === 'object' && !Array.isArray(val)
-              ? (val as Variables)
-              : vars;
-          out += render(node.trueBranch, innerVars, val);
+          const innerVars = val != null && typeof val === 'object' ? createScope(val) : vars;
+          out += renderNodes(node.trueBranch, innerVars, val);
         } else {
-          out += render(node.falseBranch, vars, context);
+          out += renderNodes(node.falseBranch, vars, context);
         }
         break;
       }
       case 'range': {
         const arr = asArray(get(vars, node.path));
         for (const item of arr) {
-          out += render(node.body, asObjectScope(item), item);
+          out += renderNodes(node.body, asObjectScope(item), item);
         }
         break;
       }
@@ -286,17 +322,26 @@ export function render(nodes: Node[], vars: Variables, context?: unknown): strin
       }
       case 'index': {
         const obj = get(vars, node.path);
-        const val = obj != null ? (obj as Record<string | number, unknown>)[node.key] : undefined;
+        const val = getOwn(obj, node.key);
         out += val == null ? '' : String(val);
         break;
       }
       case 're_replace': {
         const val = get(vars, node.path);
         const str = val == null ? '' : String(val);
+        if (str.length > MAX_REPLACE_INPUT_LENGTH) {
+          throw new RangeError(
+            `re_replace input is too long; maximum length is ${MAX_REPLACE_INPUT_LENGTH}`,
+          );
+        }
         out += str.replaceAll(node.pattern, node.replacement);
         break;
       }
     }
   }
   return out;
+}
+
+export function render(nodes: Node[], vars: Variables, context?: unknown): string {
+  return renderNodes(nodes, createScope(vars), context);
 }
